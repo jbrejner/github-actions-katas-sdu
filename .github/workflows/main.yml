@@ -1,17 +1,26 @@
 name: Main workflow
 on: push
+# docker_username: ${{ github.actor }} 
 env: # Set the secret as an input
-  docker_username: ${{ github.actor }} 
+  
   docker_password: ${{ secrets.GITHUB_TOKEN }} 
   GIT_COMMIT: ${{ github.sha }}
+  ATRIAL: AbcdEfgh
 jobs:
   Build:
     runs-on: ubuntu-latest
     container: gradle:6-jdk11
     steps:
+      - name: Lowercasing
+        run: echo "docker_username=kurt" >> $GITHUB_ENV 
+        
       - name: Clone down repository
         uses: actions/checkout@v4
       
+      - name: show var
+        run: echo $docker_username
+
+
       - name: Build Application
         run: ci/build-app.sh
 
@@ -35,6 +44,10 @@ jobs:
         with:
           name: code
           path: .
+      
+            
+      - name: show var
+        run: echo $docker_username
 
       - name: Lint code
         uses: super-linter/super-linter/slim@v8
